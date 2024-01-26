@@ -42,13 +42,13 @@ $config = [
             ],
         ],
         'db' => $db,
-//        'view' => [
-//            'theme' => [
-//                'pathMap' => [
-//                    '@app/views' => '@vendor/hail812/yii2-adminlte3/src/views'
-//                ],
-//            ],
-//        ],
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@app/views' => '@vendor/hail812/yii2-adminlte3/src/views'
+                ],
+            ],
+        ],
 
         'urlManager' => [
             'enablePrettyUrl' => true,

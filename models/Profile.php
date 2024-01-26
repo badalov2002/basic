@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "profile".
@@ -19,6 +20,8 @@ use Yii;
  */
 class Profile extends \yii\db\ActiveRecord
 {
+    public $eventImage;
+
     /**
      * {@inheritdoc}
      */
@@ -35,8 +38,9 @@ class Profile extends \yii\db\ActiveRecord
         return [
             [['user_id'], 'required'],
             [['user_id'], 'integer'],
-            [['name', 'fullname', 'surname', 'photo'], 'string', 'max' => 25],
+            [['name', 'fullname', 'surname'], 'string', 'max' => 25],
             [['comment'], 'string', 'max' => 150],
+            [['eventImage'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -65,5 +69,26 @@ class Profile extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+    public function upload()
+    {
+        $name = rand(1000, 9999) . strtotime(date("now"));
+        $path = 'upload/profile/' . $name . "." . $this->eventImage->extension;
+        if ($this->eventImage->saveAs($path) and file_exists('upload/profile/'.$this->photo)) {
+            unlink('upload/profile/'.$this->photo);
+            $this->photo = $name . "." . $this->eventImage->extension;
+            $this->eventImage = null;
+            return true;
+        } else {
+            $this->photo = $name . "." . $this->eventImage->extension;
+            $this->eventImage = null;
+            return true;
+        }
+    }
+
+    public function uploadPath()
+    {
+        return Url::to('web/uploads/profile');
     }
 }

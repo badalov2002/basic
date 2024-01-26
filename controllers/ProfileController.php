@@ -6,6 +6,8 @@ use app\models\Profile;
 use yii\data\ActiveDataProvider;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
+use Yii;
 
 /**
  * ProfileController implements the CRUD actions for Profile model.
@@ -37,22 +39,10 @@ class ProfileController extends MainCantroller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Profile::find(),
-            /*
-            'pagination' => [
-                'pageSize' => 50
-            ],
-            'sort' => [
-                'defaultOrder' => [
-                    'id' => SORT_DESC,
-                ]
-            ],
-            */
-        ]);
-
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
+        $user = Yii::$app->user->identity;
+        $profile = Profile::find()->where("user_id = :id",[":id" => $user->id])->one();
+        return $this->render('profile', [
+            'profile' => $profile
         ]);
     }
 
@@ -102,8 +92,13 @@ class ProfileController extends MainCantroller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+
+        if ($this->request->isPost and $model->load(Yii::$app->request->post())) {
+            $model->eventImage = UploadedFile::getInstance($model, 'photo');
+            if ($model->upload() AND $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+
+            }
         }
 
         return $this->render('update', [
