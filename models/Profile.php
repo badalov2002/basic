@@ -76,7 +76,10 @@ class Profile extends \yii\db\ActiveRecord
         $name = rand(1000, 9999) . strtotime(date("now"));
         $path = 'upload/profile/' . $name . "." . $this->eventImage->extension;
         if ($this->eventImage->saveAs($path) and file_exists('upload/profile/'.$this->photo)) {
-            unlink('upload/profile/'.$this->photo);
+            if (file_exists('upload/profile/'.$this->photo))
+            {
+                unlink('upload/profile/'.$this->photo);
+            }
             $this->photo = $name . "." . $this->eventImage->extension;
             $this->eventImage = null;
             return true;
