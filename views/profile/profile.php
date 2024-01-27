@@ -34,7 +34,13 @@ $this->title = $profile->name;
             'name',
             'fullname',
             'surname',
-            'photo',
+            [
+                'attribute' =>'photo',
+                'format' =>  'raw',
+                'value' => function ($data) {
+                    return "<img src='/upload/profile/".$data->photo."' style='width:100px;' >";
+                }
+            ],
             'comment',
         ],
     ]) ?>
