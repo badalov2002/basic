@@ -40,10 +40,13 @@ class ProfileController extends MainCantroller
     public function actionIndex()
     {
         $user = Yii::$app->user->identity;
-        $profile = Profile::find()->where("user_id = :id",[":id" => $user->id])->one();
-        return $this->render('profile', [
-            'profile' => $profile
-        ]);
+        if (isset($user) and !empty($user))
+        {
+            $profile = Profile::find()->where("user_id = :id",[":id" => $user->id])->one();
+            return $this->render('profile', [
+                'profile' => $profile
+            ]);
+        }
     }
 
     /**
