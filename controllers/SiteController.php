@@ -38,6 +38,18 @@ class SiteController extends Controller
             ],
         ];
     }
+    public function beforeAction($action) {
+        if (parent::beforeAction($action)) {
+            if ($this->action->id != 'login') {
+                if (Yii::$app->user->isGuest) {
+                    return $this->redirect(['site/login']);
+                }
+            }
+            return true; // or false if needed
+        } else {
+            return false;
+        }
+    }
     /**
      * {@inheritdoc}
      */

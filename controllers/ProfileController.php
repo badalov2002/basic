@@ -99,7 +99,7 @@ class ProfileController extends MainCantroller
         if ($this->request->isPost and $model->load(Yii::$app->request->post())) {
             $model->eventImage = UploadedFile::getInstance($model, 'photo');
             if ($model->upload() AND $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
+                return $this->redirect(['/profile']);
 
             }
         }
